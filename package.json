@@ -1,8 +1,9 @@
+
 {
   "name": "yama-puzzle",
   "productName": "Yama Puzzle",
   "version": "0.1.0",
-  "description": "Yama Puzzle — Demo converted to Electron",
+  "description": "Yama Puzzle – Demo converted to Electron",
   "main": "main.js",
   "author": "Joe",
   "license": "MIT",
@@ -19,42 +20,22 @@
       "output": "dist"
     },
     "files": [
-      "app/**/*",
+      "app/**",
       "main.js",
       "preload.js",
       "package.json"
     ],
     "win": {
       "target": [
-        "nsis",
-        "portable"
-      ],
-      "icon": "assets/icon.ico"
-    },
-    "nsis": {
-      "oneClick": false,
-      "perMachine": false,
-      "allowElevation": true,
-      "allowToChangeInstallationDirectory": true
-    },
-    "mac": {
-      "target": [
-        "dmg",
-        "zip"
-      ],
-      "icon": "assets/icon.icns"
-    },
-    "linux": {
-      "target": [
-        "AppImage",
-        "deb"
-      ],
-      "icon": "assets"
+        {
+          "target": "portable",
+          "arch": ["ia32"]
+        }
+      ]
     }
   },
-  "dependencies": {},
   "devDependencies": {
-    "electron": "^26.0.0",
-    "electron-builder": "^24.0.0"
+    "electron": "^28.0.0",
+    "electron-builder": "^24.6.0"
   }
 }
