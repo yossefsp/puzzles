@@ -2,8 +2,8 @@ name: Build EXE Portable
 
 on:
   push:
-    branches: [ main ]  # شغّل عند أي دفع على فرع main
-  workflow_dispatch:    # يسمح بتشغيله يدويًا من صفحة Actions
+    branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   build:
@@ -11,21 +11,27 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v2
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v2
         with:
           node-version: '18'
 
-      - name: Install dependencies
-        run: npm install
+      - name: Install dependencies (force)
+        run: npm install --force
+
+      - name: List project files (debug)
+        run: dir
+
+      - name: List app folder files (debug)
+        run: dir app
 
       - name: Build portable exe (Windows 32-bit)
         run: npx electron-builder --win portable --ia32
 
       - name: Upload build artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v2
         with:
           name: exe-portable
           path: dist/*
