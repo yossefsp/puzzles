@@ -1,8 +1,6 @@
-name: Build EXE Portable
+name: Debug Build EXE Portable
 
 on:
-  push:
-    branches: [ main ]
   workflow_dispatch:
 
 jobs:
@@ -21,27 +19,15 @@ jobs:
       - name: Install dependencies (force)
         run: npm install --force
 
-      - name: List project files (debug)
-        run: dir
+      - name: Show package.json
+        run: type package.json
 
-      - name: List app folder files (debug)
-        run: dir app
+      - name: List all files in repo
+        run: dir /s
+
+      - name: Check if main.js exists
+        run: |
+          if exist main.js (echo main.js found) else (echo main.js MISSING && exit 1)
 
       - name: Build portable exe (Windows 32-bit)
         run: npx electron-builder --win portable --ia32
-
-      - name: Upload build artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: exe-portable
-          path: dist/*
-
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v1
-        with:
-          name: "Build - ${{ github.run_number }}"
-          tag_name: "build-${{ github.run_number }}"
-          body: "Build created on ${{ github.event.head_commit.timestamp }} for commit ${{ github.sha }}"
-          files: dist/*
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
