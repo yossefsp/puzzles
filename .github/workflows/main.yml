@@ -1,4 +1,4 @@
-name: Build EXE Portable
+name: Build EXE Installer
 
 on:
   push:
@@ -24,11 +24,11 @@ jobs:
       - name: Install Electron Builder
         run: npm install electron-builder --save-dev --force
 
-      - name: Build portable exe (Windows 32-bit)
-        run: npx electron-builder --win portable --ia32
+      - name: Build Windows installer
+        run: npx electron-builder --win nsis --ia32
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
-          name: exe-portable
+          name: exe-installer
           path: dist/*
