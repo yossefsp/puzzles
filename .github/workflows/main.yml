@@ -25,7 +25,7 @@ jobs:
       - name: List all files in repo
         run: dir /s
 
-      - name: Fix main.js path if missing
+            - name: Fix main.js path if missing
         run: |
           echo Checking main file path in package.json...
           for /f "tokens=2 delims=:, " %%a in ('findstr /i "\"main\"" package.json') do (
@@ -44,6 +44,7 @@ jobs:
               exit 1
             )
           )
+
 
       - name: Build portable exe (Windows 32-bit)
         run: npx electron-builder --win portable --ia32
