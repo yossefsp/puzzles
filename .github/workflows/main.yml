@@ -1,10 +1,9 @@
-name: Build Windows 7 EXE
+name: Build EXE Portable
 
 on:
   push:
-    branches:
-      - main
-  workflow_dispatch:
+    branches: [ main ]  # شغّل عند أي دفع على فرع main
+  workflow_dispatch:    # يسمح بتشغيله يدويًا من صفحة Actions
 
 jobs:
   build:
@@ -12,24 +11,21 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v2
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
         with:
-          node-version: 16
+          node-version: '18'
 
-      - name: Install dependencies (Electron 13 for Win7)
-        run: |
-          npm install
-          npm install electron@13
-          npm install electron-builder --save-dev
+      - name: Install dependencies
+        run: npm install
 
-      - name: Build EXE for Windows 7 (32-bit)
-        run: npx electron-builder --win --ia32 --publish never
+      - name: Build portable exe (Windows 32-bit)
+        run: npx electron-builder --win portable --ia32
 
-      - name: Upload EXE artifact
-        uses: actions/upload-artifact@v4
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v2
         with:
-          name: game-exe-win7
-          path: dist/*.exe
+          name: exe-portable
+          path: dist/*
