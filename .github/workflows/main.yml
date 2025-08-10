@@ -1,6 +1,8 @@
-name: Debug Build EXE Portable
+name: Build EXE Portable
 
 on:
+  push:
+    branches: [ main ]
   workflow_dispatch:
 
 jobs:
@@ -19,13 +21,7 @@ jobs:
       - name: Install dependencies (force)
         run: npm install --force
 
-      - name: Show package.json
-        run: type package.json
-
-      - name: List all files in repo
-        run: dir /s
-
-            - name: Fix main.js path if missing
+      - name: Fix main.js path if missing
         run: |
           echo Checking main file path in package.json...
           for /f "tokens=2 delims=:, " %%a in ('findstr /i "\"main\"" package.json') do (
@@ -45,6 +41,21 @@ jobs:
             )
           )
 
-
       - name: Build portable exe (Windows 32-bit)
         run: npx electron-builder --win portable --ia32
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: exe-portable
+          path: dist/*
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: "Build - ${{ github.run_number }}"
+          tag_name: "build-${{ github.run_number }}"
+          body: "Build created on ${{ github.event.head_commit.timestamp }} for commit ${{ github.sha }}"
+          files: dist/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
