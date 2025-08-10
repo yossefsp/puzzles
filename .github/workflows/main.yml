@@ -8,17 +8,25 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: 18
 
-      - run: npm install --force
+      - name: Install dependencies
+        run: npm install --force
 
-      - run: npx electron-builder --win portable --ia32
+      - name: Ensure Electron Builder is installed
+        run: npm install electron-builder --save-dev --force
 
-      - uses: actions/upload-artifact@v4
+      - name: Build portable exe (Windows 32-bit)
+        run: npx electron-builder --win portable --ia32
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
         with:
           name: exe-portable
           path: dist/*
