@@ -25,9 +25,25 @@ jobs:
       - name: List all files in repo
         run: dir /s
 
-      - name: Check if main.js exists
+      - name: Fix main.js path if missing
         run: |
-          if exist main.js (echo main.js found) else (echo main.js MISSING && exit 1)
+          echo Checking main file path in package.json...
+          for /f "tokens=2 delims=:, " %%a in ('findstr /i "\"main\"" package.json') do (
+            set mainfile=%%~a
+          )
+          set mainfile=%mainfile:"=%
+          if exist "%mainfile%" (
+            echo Main file found: %mainfile%
+          ) else (
+            echo Main file "%mainfile%" NOT found, fixing...
+            if exist "main.js" (
+              powershell -Command "(Get-Content package.json) -replace '\"main\": \".*\"', '\"main\": \"main.js\"' | Set-Content package.json"
+              echo Main path fixed to main.js
+            ) else (
+              echo No main.js found, please check your project!
+              exit 1
+            )
+          )
 
       - name: Build portable exe (Windows 32-bit)
         run: npx electron-builder --win portable --ia32
